@@ -6,13 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019 | Shadowseer的博客</title>
+  <title>法线贴图 | Shadowseer的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Shadowseer的博客">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;archives&#x2F;2019&#x2F;index.html">
+  <meta name="description" content="法线贴图的用法法线贴图两种用法：  TBN矩阵左乘法线贴图的发现，将其转化为世界空间的法向量。  TBN的逆矩阵左乘世界空间的法向量，将其转化为切线空间的法向量。   切线空间的推导边E2与纹理坐标的差ΔU2、ΔV2构成一个三角形。ΔU2与切线向量T方向相同，而ΔV2与副切线向量BB方向相同。这也就是说，所以我们可以将三角形的边E1与E2写成切线向量T和副切线向量B的线性组合：  E_1&#x3D;\Del">
+<meta name="keywords" content="OpenGL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="法线贴图">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;OpenGL&#x2F;%E9%AB%98%E7%BA%A7%E5%85%89%E7%85%A7&#x2F;%E6%B3%95%E7%BA%BF%E8%B4%B4%E5%9B%BE&#x2F;index.html">
 <meta property="og:site_name" content="Shadowseer的博客">
+<meta property="og:description" content="法线贴图的用法法线贴图两种用法：  TBN矩阵左乘法线贴图的发现，将其转化为世界空间的法向量。  TBN的逆矩阵左乘世界空间的法向量，将其转化为切线空间的法向量。   切线空间的推导边E2与纹理坐标的差ΔU2、ΔV2构成一个三角形。ΔU2与切线向量T方向相同，而ΔV2与副切线向量BB方向相同。这也就是说，所以我们可以将三角形的边E1与E2写成切线向量T和副切线向量B的线性组合：  E_1&#x3D;\Del">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-12-09T08:20:15.050Z">
 <meta name="twitter:card" content="summary">
   
   
@@ -125,36 +129,105 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-OpenGL/高级光照/法线贴图" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      法线贴图
+    </h1>
+  
+
+        
+        <a href="/OpenGL/%E9%AB%98%E7%BA%A7%E5%85%89%E7%85%A7/%E6%B3%95%E7%BA%BF%E8%B4%B4%E5%9B%BE/" class="archive-article-date">
+  	<time datetime="2019-12-09T06:00:01.024Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-09</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="法线贴图的用法"><a href="#法线贴图的用法" class="headerlink" title="法线贴图的用法"></a>法线贴图的用法</h1><p>法线贴图两种用法：</p>
+<ol>
+<li><p>TBN矩阵左乘法线贴图的发现，将其转化为世界空间的法向量。</p>
+</li>
+<li><p>TBN的逆矩阵左乘世界空间的法向量，将其转化为切线空间的法向量。</p>
+</li>
+</ol>
+<h1 id="切线空间的推导"><a href="#切线空间的推导" class="headerlink" title="切线空间的推导"></a>切线空间的推导</h1><p>边E2与纹理坐标的差ΔU2、ΔV2构成一个三角形。ΔU2与切线向量T方向相同，而ΔV2与副切线向量BB方向相同。这也就是说，所以我们可以将三角形的边E1与E2写成切线向量T和副切线向量B的线性组合：</p>
+<script type="math/tex; mode=display">
+E_1=\Delta U_1T+\Delta V_1B
+
+E_2=\Delta U_2T+\Delta V_2B</script><p>写成矩阵形式：</p>
+<script type="math/tex; mode=display">
+\left[
+\begin{matrix}
+E_{1x}\ E_{1y}\ E_{1z}\\
+E_{2x}\ E_{2y}\ E_{2z}
+\end{matrix}
+\right]
+=
+\left[
+\begin{matrix}
+\Delta U_1\ \Delta V_1\\
+\Delta U_2\ \Delta V_2
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+T_x\ T_y\ T_z\\
+B_x\ B_y\ B_z
+\end{matrix}
+\right]</script><p>从而推导出切线和副切线的公式：</p>
+<script type="math/tex; mode=display">
+\left[\begin{matrix}
+T_x\ T_y\ T_z\\
+B_x\ B_y\ B_z
+\end{matrix}\right]
+=
+\left[\begin{matrix}
+\Delta U_1\ \Delta V_1\\
+\Delta U_2\ \Delta V_2
+\end{matrix}\right]^{-1}
+\left[\begin{matrix}
+E_{1x}\ E_{1y}\ E_{1z}\\
+E_{2x}\ E_{2y}\ E_{2z}
+\end{matrix}\right]
+
+=
+\frac{1}{\Delta U_1\Delta V_2 - \Delta U_2\Delta V_1} \left[\begin{matrix}\Delta V_2\ -\Delta V_1\\ -\Delta U_2\ \Delta U_1\end{matrix}\right]
+\left[\begin{matrix}E_{1x}\ E_{1y}\ E_{1z}\\E_{2x}\ E_{2y}\ E_{2z}\end{matrix}\right]</script><h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">//计算第一个三角形的两条边</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">	glm::vec3 edge1 = glm::vec3(<span class="built_in">position</span>[<span class="number">2</span>][<span class="number">0</span>] - <span class="built_in">position</span>[<span class="number">0</span>][<span class="number">0</span>], <span class="built_in">position</span>[<span class="number">2</span>][<span class="number">1</span>] - <span class="built_in">position</span>[<span class="number">0</span>][<span class="number">1</span>], <span class="built_in">position</span>[<span class="number">2</span>][<span class="number">2</span>] - <span class="built_in">position</span>[<span class="number">0</span>][<span class="number">2</span>]);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">	glm::vec3 edge2 = glm::vec3(<span class="built_in">position</span>[<span class="number">1</span>][<span class="number">0</span>] - <span class="built_in">position</span>[<span class="number">0</span>][<span class="number">0</span>], <span class="built_in">position</span>[<span class="number">1</span>][<span class="number">1</span>] - <span class="built_in">position</span>[<span class="number">0</span>][<span class="number">1</span>], <span class="built_in">position</span>[<span class="number">1</span>][<span class="number">2</span>] - <span class="built_in">position</span>[<span class="number">0</span>][<span class="number">2</span>]);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">//计算第一个三角形的uv差值</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">	glm::vec2 deltaUV1 = glm::vec2(texCoord[<span class="number">2</span>][<span class="number">0</span>] - texCoord[<span class="number">0</span>][<span class="number">0</span>], texCoord[<span class="number">2</span>][<span class="number">1</span>] - texCoord[<span class="number">0</span>][<span class="number">1</span>]);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">	glm::vec2 deltaUV2 = glm::vec2(texCoord[<span class="number">1</span>][<span class="number">0</span>] - texCoord[<span class="number">0</span>][<span class="number">0</span>], texCoord[<span class="number">1</span>][<span class="number">1</span>] - texCoord[<span class="number">0</span>][<span class="number">1</span>]);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">//计算第一个三角形切线</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">	glm::vec3 tangent1 = CalcTangent(edge1, edge2, deltaUV1, deltaUV2);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">//计算第二个三角形的两条边</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">	edge1 = glm::vec3(<span class="built_in">position</span>[<span class="number">2</span>][<span class="number">0</span>] - <span class="built_in">position</span>[<span class="number">0</span>][<span class="number">0</span>], <span class="built_in">position</span>[<span class="number">2</span>][<span class="number">1</span>] - <span class="built_in">position</span>[<span class="number">0</span>][<span class="number">1</span>], <span class="built_in">position</span>[<span class="number">2</span>][<span class="number">2</span>] - <span class="built_in">position</span>[<span class="number">0</span>][<span class="number">2</span>]);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">	edge2 = glm::vec3(<span class="built_in">position</span>[<span class="number">3</span>][<span class="number">0</span>] - <span class="built_in">position</span>[<span class="number">0</span>][<span class="number">0</span>], <span class="built_in">position</span>[<span class="number">3</span>][<span class="number">1</span>] - <span class="built_in">position</span>[<span class="number">0</span>][<span class="number">1</span>], <span class="built_in">position</span>[<span class="number">3</span>][<span class="number">2</span>] - <span class="built_in">position</span>[<span class="number">0</span>][<span class="number">2</span>]);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">//计算第二个三角形的uv差值</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">	deltaUV1 = glm::vec2(texCoord[<span class="number">2</span>][<span class="number">0</span>] - texCoord[<span class="number">0</span>][<span class="number">0</span>], texCoord[<span class="number">2</span>][<span class="number">1</span>] - texCoord[<span class="number">0</span>][<span class="number">1</span>]);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">	deltaUV2 = glm::vec2(texCoord[<span class="number">3</span>][<span class="number">0</span>] - texCoord[<span class="number">0</span>][<span class="number">0</span>], texCoord[<span class="number">3</span>][<span class="number">1</span>] - texCoord[<span class="number">0</span>][<span class="number">1</span>]);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">//计算第二个三角形切线</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">	glm::vec3 tangent2 = CalcTangent(edge1, edge2, deltaUV1, deltaUV2);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line"><span class="comment">//计算切线</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">glm::<span class="function">vec3 <span class="title">CalcTangent</span><span class="params">(glm::vec3 edge1, glm::vec3 edge2, glm::vec2 deltaUV1, glm::vec2 deltaUV2)</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">	glm::vec3 tangent;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">	GLfloat f = <span class="number">1.0f</span> / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">	tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">	tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">	tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line">	tangent = glm::normalize(tangent);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">return</span> tangent;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" target="_blank" rel="noopener" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/OpenGL/PBR/PBR/" class="archive-article-date">
-  	<time datetime="2019-12-09T08:37:23.083Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/OpenGL/PBR/PBR/">PBR</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -166,325 +239,7 @@
 		</ul>
 	</div>
 
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL//" class="article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL/PBR//" class="article-tag-list-link color4">PBR</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/OpenGL/%E9%AB%98%E7%BA%A7OpenGL/%E5%B8%A7%E7%BC%93%E5%AD%98/" class="archive-article-date">
-  	<time datetime="2019-12-09T08:27:39.795Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/OpenGL/%E9%AB%98%E7%BA%A7OpenGL/%E5%B8%A7%E7%BC%93%E5%AD%98/">帧缓存</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL//" class="article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL/高级OpenGL//" class="article-tag-list-link color4">高级OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/OpenGL/%E9%AB%98%E7%BA%A7OpenGL/%E5%A4%A9%E7%A9%BA%E7%9B%92%E5%AD%90/" class="archive-article-date">
-  	<time datetime="2019-12-09T08:27:39.794Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/OpenGL/%E9%AB%98%E7%BA%A7OpenGL/%E5%A4%A9%E7%A9%BA%E7%9B%92%E5%AD%90/">天空盒子</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL//" class="article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL/高级OpenGL//" class="article-tag-list-link color4">高级OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/OpenGL/%E9%AB%98%E7%BA%A7OpenGL/%E6%A8%A1%E6%9D%BF%E6%B5%8B%E8%AF%95/" class="archive-article-date">
-  	<time datetime="2019-12-09T08:27:39.793Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/OpenGL/%E9%AB%98%E7%BA%A7OpenGL/%E6%A8%A1%E6%9D%BF%E6%B5%8B%E8%AF%95/">模板测试</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL//" class="article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL/高级OpenGL//" class="article-tag-list-link color4">高级OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/OpenGL/%E9%AB%98%E7%BA%A7OpenGL/MSAA/" class="archive-article-date">
-  	<time datetime="2019-12-09T08:27:39.792Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/OpenGL/%E9%AB%98%E7%BA%A7OpenGL/MSAA/">MSAA</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL//" class="article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL/高级OpenGL//" class="article-tag-list-link color4">高级OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/OpenGL/%E9%AB%98%E7%BA%A7OpenGL/%E6%B7%B7%E5%90%88/" class="archive-article-date">
-  	<time datetime="2019-12-09T08:27:39.790Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/OpenGL/%E9%AB%98%E7%BA%A7OpenGL/%E6%B7%B7%E5%90%88/">混合</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL//" class="article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL/高级OpenGL//" class="article-tag-list-link color4">高级OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/OpenGL/%E9%AB%98%E7%BA%A7%E5%85%89%E7%85%A7/%E9%98%B4%E5%BD%B1%E6%98%A0%E5%B0%84/" class="archive-article-date">
-  	<time datetime="2019-12-09T06:00:01.068Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/OpenGL/%E9%AB%98%E7%BA%A7%E5%85%89%E7%85%A7/%E9%98%B4%E5%BD%B1%E6%98%A0%E5%B0%84/">阴影映射</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -501,179 +256,112 @@
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" target="_blank" rel="noopener" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" target="_blank" rel="noopener" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;" target="_blank" rel="noopener"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/OpenGL/%E9%AB%98%E7%BA%A7%E5%85%89%E7%85%A7/%E6%B3%95%E7%BA%BF%E8%B4%B4%E5%9B%BE/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/OpenGL/%E9%AB%98%E7%BA%A7%E5%85%89%E7%85%A7/%E7%82%B9%E9%98%B4%E5%BD%B1/" class="archive-article-date">
-  	<time datetime="2019-12-09T06:00:01.067Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-09</time>
-</a>
+<nav id="article-nav">
+  
+    <a href="/OpenGL/%E9%AB%98%E7%BA%A7%E5%85%89%E7%85%A7/Blinn-Phong%E5%85%89%E7%85%A7%E6%A8%A1%E5%9E%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Blinn-Phong光照模型
+        
+      </div>
+    </a>
+  
+  
+    <a href="/OpenGL/%E5%85%A5%E9%97%A8/%E7%BA%B9%E7%90%86/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">纹理</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" target="_blank" rel="noopener" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/OpenGL/%E9%AB%98%E7%BA%A7%E5%85%89%E7%85%A7/%E7%82%B9%E9%98%B4%E5%BD%B1/">点阴影</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL//" class="article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL/高级光照//" class="article-tag-list-link color5">高级光照</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/OpenGL/%E9%AB%98%E7%BA%A7%E5%85%89%E7%85%A7/%E6%B3%9B%E5%85%89/" class="archive-article-date">
-  	<time datetime="2019-12-09T06:00:01.065Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/OpenGL/%E9%AB%98%E7%BA%A7%E5%85%89%E7%85%A7/%E6%B3%9B%E5%85%89/">泛光</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL//" class="article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL/高级光照//" class="article-tag-list-link color5">高级光照</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/OpenGL/%E9%AB%98%E7%BA%A7%E5%85%89%E7%85%A7/HDR/" class="archive-article-date">
-  	<time datetime="2019-12-09T06:00:01.049Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/OpenGL/%E9%AB%98%E7%BA%A7%E5%85%89%E7%85%A7/HDR/">HDR</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL//" class="article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/OpenGL/高级光照//" class="article-tag-list-link color5">高级光照</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
   
-    </div></section>
   
 
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/2019/page/2/">2</a><a class="extend next" rel="next" href="/archives/2019/page/2/">Next &amp;raquo;</a>
-    </nav>
+  
+
+  
+
   
 
 
@@ -697,8 +385,8 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
